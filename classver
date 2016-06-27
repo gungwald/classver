@@ -5,13 +5,13 @@ if [ "$BIN_DIR" = '.' ]; then
     BIN_DIR=`pwd`
 fi
 
-CLASSES_DIR="$HOME"/src/classver/build/classes
-MAIN_CLASS=com.alteredmechanism.classversionextractor.ClassVersionExtractor
-MAIN_CLASS_FILE=${MAIN_CLASS_FILE//.//}.class
+APP=com.alteredmechanism.classversionextractor.ClassVersionExtractor
+CLASSES_DIR="$HOME"/git/classver/build/classes/main
+MAIN_CLASS_FILE=${APP//.//}.class
 
 if [ -f "$CLASSES_DIR/$MAIN_CLASS_FILE" ]
 then
-    exec java -cp "$CLASSES_DIR" $MAIN_CLASS "$@"
+    exec java -cp "$CLASSES_DIR" $APP "$@"
 else
     exec java -jar `dirname "$BIN_DIR"`/lib/`basename "$0"`.jar "$@"
 fi
