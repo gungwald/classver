@@ -93,26 +93,31 @@ public class ClassVersionExtractor {
     }
 
     public void printVersion(File f) throws IOException {
-        if (f.isDirectory()) {
-            for (File entry : f.listFiles(javaFilter)) {
-                printVersion(entry);
+        if (f.exists()) {
+            if (f.isDirectory()) {
+                for (File entry : f.listFiles(javaFilter)) {
+                    printVersion(entry);
+                }
             }
-        }
-        else if (f.getName().endsWith(".class")) {
-            InputStream in = new FileInputStream(f);
-            try {
-                ClassVersion v = readVersion(in);
-                System.out.println(f.getName() + ": " + v.toString());
+            else if (f.getName().endsWith(".class")) {
+                InputStream in = new FileInputStream(f);
+                try {
+                    ClassVersion v = readVersion(in);
+                    System.out.println(f.getName() + ": " + v.toString());
+                }
+                finally {
+                    close(in);
+                }
             }
-            finally {
-                close(in);
+            else if (f.getName().endsWith(".jar")) {
+                printVersions(new JarFile(f));
             }
-        }
-        else if (f.getName().endsWith(".jar")) {
-            printVersions(new JarFile(f));
+            else {
+                System.out.printf("%s: file type has no Java version%n", f.getCanonicalPath());
+            }
         }
         else {
-            // Fail
+        	System.out.printf("%s: file not found%n", f.getCanonicalFile());
         }
     }
 }
