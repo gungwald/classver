@@ -11,6 +11,12 @@ jar {
     }
 }
 
+eclipse {
+    classpath {
+        defaultOutputDir = file("build/classes/main")
+    }
+}
+
 repositories {
     mavenCentral()
 }
