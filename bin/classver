@@ -1,0 +1,22 @@
+#!/bin/sh
+
+BIN_DIR=`dirname "$0"`
+if [ "$BIN_DIR" = '.' ]; then
+    BIN_DIR=`pwd`
+fi
+TOP_DIR=`dirname "$BIN_DIR"`
+THIS=`basename "$0"`
+
+APP=com.alteredmechanism.classversionextractor.ClassVersionExtractor
+CLASSES_DIR="$HOME"/git/classver/build/classes/main
+MAIN_CLASS_FILE=${APP//.//}.class
+VERSION=1.0
+JAR="$THIS"-"$VERSION".jar
+
+if [ -f "$CLASSES_DIR/$MAIN_CLASS_FILE" ]
+then
+    exec java -cp "$CLASSES_DIR" $APP "$@"
+else
+    exec java -jar "$TOP_DIR"/lib/"$JAR" "$@"
+fi
+

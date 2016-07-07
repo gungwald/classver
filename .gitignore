@@ -5,7 +5,7 @@
 build/
 
 # Eclipse build directory
-bin/
+classes/
 
 # Ignore Gradle GUI config
 gradle-app.setting
