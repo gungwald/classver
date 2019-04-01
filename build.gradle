@@ -4,11 +4,12 @@ apply plugin: 'distribution'
 
 sourceCompatibility = 1.5
 version = '1.1'
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'ClassVersion',
                    'Implementation-Version': version,
-		   'Main-Class': 'com.alteredmechanism.classversionextractor.ClassVersionExtractor'
+				   'Main-Class': 'com.alteredmechanism.classversionextractor.ClassVersionExtractor'
     }
 }
 
@@ -20,4 +21,12 @@ eclipse {
 
 repositories {
     mavenCentral()
+}
+
+distributions {
+	main {
+		contents {
+			from "build/libs/" + name + "-" + version + ".jar"
+		}
+	}
 }

@@ -8,7 +8,7 @@
 <project name="classver" default="jar" basedir=".">
 
 	<property name="main.class" value="com.alteredmechanism.classversionextractor.ClassVersionExtractor" />
-	<property name="version" value="1.0" />
+	<property name="version" value="1.1" />
 	<property name="lang.version" value="1.5" />
 	<property name="src.dir" value="src/main/java" />
 	<property name="dist.dir" value="src/main/dist" />
@@ -16,6 +16,7 @@
 	<property name="app.jar" value="build/libs/${ant.project.name}-${version}.jar"/>
 	<property name="run.script" value="${dist.dir}/bin/${ant.project.name}" />
 	<property name="sys.install.dir" value="/usr/local" />
+	<property name="bld.dist.dir" value="build/distribution" />
 	
 	<target name="compile" description="Compiles the source">
 		<javac srcdir="${src.dir}" destdir="${cls.dir}" classpath="${cls.dir}" 
@@ -46,6 +47,16 @@
 		<chmod file="${sys.install.dir}/bin/${ant.project.name}" perm="ugo+rx"/>
 		<mkdir dir="${sys.install.dir}/lib"/>
 		<copy file="${app.jar}" todir="${sys.install.dir}/lib" preservelastmodified="true"/>
+	</target>
+    
+	<target name="distZip" depends="jar" description="Build a zip file with just binaries for distribution to users">
+		<mkdir dir="${bld.dist.dir}"/>
+		<move file="build/libs" tofile="build/lib"/>
+		<zip destfile="${bld.dist.dir}/${ant.project.name}-${version}-bin.zip">
+			<fileset dir="${dist.dir}" includes="bin/${ant.project.name}"/>
+			<fileset dir="build" includes="lib/${ant.project.name}-${version}.jar"/>
+		</zip>
+		<move file="build/lib" tofile="build/libs"/>
 	</target>
     
 	<target name="clean">
