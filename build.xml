@@ -39,6 +39,9 @@
 		<chmod file="${user.home}/bin/${ant.project.name}" perm="ugo+rx"/>
 		<mkdir dir="${user.home}/lib"/>
 		<copy file="${app.jar}" todir="${user.home}/lib" preservelastmodified="true" />
+		<exec dir="${user.home}/bin" executable="cmd.exe" osfamily="windows" >
+			<arg line="${dist.dir}/bin/addtopath.bat"/>
+		</exec>
 	</target>
     
 	<target name="systemInstall" depends="jar" description="Installs into /usr/local/bin and /usr/local/lib">
