@@ -22,21 +22,26 @@ public class ClassVersionExtractor {
         try {
             cve.printVersions(args);
         }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void printf(String format, Object ... args) {
+        System.out.printf(format, args);
+    }
+
     public void printVersions(String[] fileNames) throws IOException {
-        for (String name : fileNames) {
-            printVersion(new File(name));
-        }
+        if (fileNames.length == 0)
+            printVersion(new File(System.getProperty("user.dir")));
+        else
+            for (String name : fileNames)
+                printVersion(new File(name));
     }
 
     public void printVersions(File[] files) throws IOException {
-        for (File file : files) {
+        for (File file : files)
             printVersion(file);
-        }
     }
 
     public ClassVersion readVersion(InputStream in) throws IOException {
@@ -58,66 +63,59 @@ public class ClassVersionExtractor {
         return ver;
     }
 
+    public ClassVersion readVersion(File f) throws IOException {
+        ClassVersion v = null;
+        InputStream in = new FileInputStream(f);
+        try {
+            v = readVersion(in);
+        }
+        finally {
+            close(in);
+        }
+        return v;
+    }
+
     public void close(InputStream in) {
-        if (in != null) {
+        if (in != null)
             try {
                 in.close();
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
-        }
     }
 
     public void printVersions(JarFile jar) throws IOException {
         Enumeration<? extends JarEntry> entries = jar.entries();
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
-            if (entry.isDirectory()) {
+            if (entry.isDirectory())
                 continue;
-            }
-            else if (entry.getSize() < 10) {
-                System.out.println(jar.getName() + ": " + entry.getName() + ": Entry is to small to read the version");
-            }
+            else if (entry.getSize() < 10)
+                printf("%s: %s: Entry to small%n", jar.getName(), entry.getName());
             else if (entry.getName().endsWith(".class")) {
                 InputStream in = jar.getInputStream(entry);
                 ClassVersion v = readVersion(in);
-                if (v == null) {
-                    System.out.println(jar.getName() + ": " + entry.getName() + ": Unable to read version");
-                }
-                else {
-                    System.out.println(jar.getName() + ": " + entry.getName() + ": " + v.toString());
-                }
+                if (v == null)
+                    printf("%s: %s: Can't read version%n", jar.getName(), entry.getName());
+                else
+                    printf("%s: %s: %s", jar.getName(), entry.getName(), v.toString());
             }
         }
     }
 
     public void printVersion(File f) throws IOException {
-        if (f.exists()) {
-            if (f.isDirectory()) {
-                for (File entry : f.listFiles(javaFilter)) {
+        if (f.exists())
+            if (f.isDirectory())
+                for (File entry : f.listFiles(javaFilter))
                     printVersion(entry);
-                }
-            }
-            else if (f.getName().endsWith(".class")) {
-                InputStream in = new FileInputStream(f);
-                try {
-                    ClassVersion v = readVersion(in);
-                    System.out.println(f.getName() + ": " + v.toString());
-                }
-                finally {
-                    close(in);
-                }
-            }
-            else if (f.getName().endsWith(".jar")) {
+            else if (f.getName().endsWith(".class"))
+                System.out.println(f.getName() + ": " + readVersion(f).toString());
+            else if (f.getName().endsWith(".jar"))
                 printVersions(new JarFile(f));
-            }
-            else {
-                System.out.printf("%s: file type has no Java version%n", f.getCanonicalPath());
-            }
-        }
-        else {
-        	System.out.printf("%s: file not found%n", f.getCanonicalFile());
-        }
+            else
+                printf("%s: file type has no Java version%n", f.getCanonicalPath());
+        else
+            printf("%s: file not found%n", f.getCanonicalFile());
     }
 }
