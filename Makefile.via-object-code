@@ -1,0 +1,22 @@
+MAIN_CLASS=com.alteredmechanism.classversionextractor.ClassVersionExtractor
+INCLUDES=-Isrc/main/java
+OBJS=ClassVersionExtractor.o ClassVersion.o JavaFileFilter.o
+PROGRAM=classver
+
+$(PROGRAM): $(OBJS)
+	gcj -o $(PROGRAM) $(OBJS) --main=$(MAIN_CLASS)
+
+ClassVersionExtractor.o: src/main/java/com/alteredmechanism/classversionextractor/ClassVersionExtractor.java
+	gcj -c -o ClassVersionExtractor.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/ClassVersionExtractor.java 
+	objcopy -L '_ZGr8_$$_dummy' $@
+
+ClassVersion.o: src/main/java/com/alteredmechanism/classversionextractor/ClassVersion.java
+	gcj -c -o ClassVersion.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/ClassVersion.java
+	objcopy -L '_ZGr8_$$_dummy' $@
+
+JavaFileFilter.o: src/main/java/com/alteredmechanism/classversionextractor/JavaFileFilter.java
+	gcj -c -o JavaFileFilter.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/JavaFileFilter.java
+	objcopy -L '_ZGr8_$$_dummy' $@
+
+clean:
+	rm -f classver $(OBJS)
