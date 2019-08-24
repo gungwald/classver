@@ -8,23 +8,29 @@
 <project name="classver" default="jar" basedir=".">
 
 	<property name="main.class" value="com.alteredmechanism.classversionextractor.ClassVersionExtractor" />
-	<property name="version" value="1.0" />
+	<property name="version" value="1.1" />
 	<property name="lang.version" value="1.5" />
 	<property name="src.dir" value="src/main/java" />
-	<property name="cls.dir" value="build/classes" />
 
         <target name="setup" description="Sets stuff up">
             <mkdir dir="${cls.dir}"/>
             <mkdir dir="dir}"/>
         </target>
 
+	<property name="dist.dir" value="src/main/dist" />
+	<property name="cls.dir" value="build/classes" />
+	<property name="app.jar" value="build/libs/${ant.project.name}-${version}.jar"/>
+	<property name="run.script" value="${dist.dir}/bin/${ant.project.name}" />
+	<property name="sys.install.dir" value="/usr/local" />
+	<property name="bld.dist.dir" value="build/distribution" />
+	
 	<target name="compile" depends="setup" description="Compiles the source">
 		<javac srcdir="${src.dir}" destdir="${cls.dir}" classpath="${cls.dir}" 
 			debug="on" source="${lang.version}" target="${lang.version}" includeAntRuntime="false" />
 	</target>
 
 	<target name="jar" depends="compile" description="Builds an executable jar file">
-		<jar destfile="build/libs/${ant.project.name}.jar" basedir="${cls.dir}">
+		<jar destfile="${app.jar}" basedir="${cls.dir}">
 			<manifest>
 				<attribute name="Implementation-Title" value="${ant.project.name}" />
 				<attribute name="Implementation-Version" value="${version}" />
@@ -33,8 +39,40 @@
 		</jar>
 	</target>
     
+	<target name="userInstall" depends="jar" description="Installs into $HOME/bin and $HOME/lib">
+		<mkdir dir="${user.home}/bin"/>
+		<copy file="${run.script}" todir="${user.home}/bin" preservelastmodified="true"/>
+		<chmod file="${user.home}/bin/${ant.project.name}" perm="ugo+rx"/>
+		<mkdir dir="${user.home}/lib"/>
+		<copy file="${app.jar}" todir="${user.home}/lib" preservelastmodified="true" />
+		<exec dir="${user.home}/bin" executable="cmd.exe" osfamily="windows" >
+			<arg line="${dist.dir}/bin/addtopath.bat"/>
+		</exec>
+	</target>
+    
+	<target name="systemInstall" depends="jar" description="Installs into /usr/local/bin and /usr/local/lib">
+		<mkdir dir="${sys.install.dir}/bin"/>
+		<copy file="${run.script}" todir="${sys.install.dir}/bin" preservelastmodified="true" />
+		<chmod file="${sys.install.dir}/bin/${ant.project.name}" perm="ugo+rx"/>
+		<mkdir dir="${sys.install.dir}/lib"/>
+		<copy file="${app.jar}" todir="${sys.install.dir}/lib" preservelastmodified="true"/>
+	</target>
+    
+	<target name="distZip" depends="jar" description="Build a zip file with just binaries for distribution to users">
+		<mkdir dir="${bld.dist.dir}"/>
+		<move file="build/libs" tofile="build/lib"/>
+		<zip destfile="${bld.dist.dir}/${ant.project.name}-${version}-bin.zip">
+			<fileset dir="${dist.dir}" includes="bin/${ant.project.name}"/>
+			<fileset dir="build" includes="lib/${ant.project.name}-${version}.jar"/>
+		</zip>
+		<move file="build/lib" tofile="build/libs"/>
+	</target>
+    
 	<target name="clean">
 	       <delete dir="build"/>
 	</target>
+	
+	
 
 </project>
+

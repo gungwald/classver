@@ -21,3 +21,6 @@ gradle-app.setting
 
 # Vim files
 *.swp
+
+# Some crap
+.DS_Store
