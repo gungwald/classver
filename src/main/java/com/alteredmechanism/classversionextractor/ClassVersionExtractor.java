@@ -110,7 +110,7 @@ public class ClassVersionExtractor {
                 for (File entry : f.listFiles(javaFilter))
                     printVersion(entry);
             else if (f.getName().endsWith(".class"))
-                System.out.println(f.getName() + ": " + readVersion(f).toString());
+                printf("%s: %s%n", f.getName(), readVersion(f).toString());
             else if (f.getName().endsWith(".jar"))
                 printVersions(new JarFile(f));
             else
