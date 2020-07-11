@@ -14,12 +14,13 @@
 
         <target name="setup" description="Sets stuff up">
             <mkdir dir="${cls.dir}"/>
-            <mkdir dir="dir}"/>
+            <mkdir dir="${libs.dir}"/>
         </target>
 
 	<property name="dist.dir" value="src/main/dist" />
 	<property name="cls.dir" value="build/classes" />
-	<property name="app.jar" value="build/libs/${ant.project.name}-${version}.jar"/>
+        <property name="libs.dir" value="build/libs" />
+	<property name="app.jar" value="${libs.dir}/${ant.project.name}-${version}.jar"/>
 	<property name="run.script" value="${dist.dir}/bin/${ant.project.name}" />
 	<property name="sys.install.dir" value="/usr/local" />
 	<property name="bld.dist.dir" value="build/distribution" />

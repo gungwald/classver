@@ -99,7 +99,7 @@ public class ClassVersionExtractor {
                 if (v == null)
                     printf("%s: %s: Can't read version%n", jar.getName(), entry.getName());
                 else
-                    printf("%s: %s: %s", jar.getName(), entry.getName(), v.toString());
+                    printf("%s: %s: %s%n", jar.getName(), entry.getName(), v.toString());
             }
         }
     }
