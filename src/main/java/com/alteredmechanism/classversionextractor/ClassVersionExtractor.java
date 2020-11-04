@@ -13,6 +13,8 @@ import java.util.jar.JarFile;
 public class ClassVersionExtractor {
 
     private FileFilter javaFilter = new JavaFileFilter();
+    private boolean displayMaxVersion = false;
+    private ClassVersion maxVersion = null;
 
     /**
      * @param args
@@ -21,22 +23,28 @@ public class ClassVersionExtractor {
         ClassVersionExtractor cve = new ClassVersionExtractor();
         try {
             cve.printVersions(args);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void printf(String format, Object ... args) {
+    public void printf(String format, Object... args) {
         System.out.printf(format, args);
     }
 
-    public void printVersions(String[] fileNames) throws IOException {
-        if (fileNames.length == 0)
+    public void printVersions(String[] args) throws IOException {
+        if (args.length == 0)
             printVersion(new File(System.getProperty("user.dir")));
         else
-            for (String name : fileNames)
-                printVersion(new File(name));
+            for (String arg : args) {
+                if (arg.equals("-m")) {
+                    displayMaxVersion = true;
+                    printVersion(new File(arg));
+                }
+            }
+            if (displayMaxVersion) {
+                printf("Max version found: %s%n", maxVersion.toString());
+            }
     }
 
     public void printVersions(File[] files) throws IOException {
@@ -56,8 +64,7 @@ public class ClassVersionExtractor {
                 ver = ClassVersion.lookupByMajorVersion(major);
                 //System.out.println(f.getName() + ": " + ver);
             }
-        }
-        finally {
+        } finally {
             close(din);
         }
         return ver;
@@ -68,8 +75,7 @@ public class ClassVersionExtractor {
         InputStream in = new FileInputStream(f);
         try {
             v = readVersion(in);
-        }
-        finally {
+        } finally {
             close(in);
         }
         return v;
@@ -79,8 +85,7 @@ public class ClassVersionExtractor {
         if (in != null)
             try {
                 in.close();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
     }
@@ -99,7 +104,14 @@ public class ClassVersionExtractor {
                 if (v == null)
                     printf("%s: %s: Can't read version%n", jar.getName(), entry.getName());
                 else
-                    printf("%s: %s: %s%n", jar.getName(), entry.getName(), v.toString());
+                    if (displayMaxVersion) {
+                        if (maxVersion == null || v.compareTo(maxVersion) > 0) {
+                            maxVersion = v;
+                        }
+                        else {
+                            printf("%s: %s: %s%n", jar.getName(), entry.getName(), v.toString());
+                        }
+                    }
             }
         }
     }
@@ -109,8 +121,17 @@ public class ClassVersionExtractor {
             if (f.isDirectory())
                 for (File entry : f.listFiles(javaFilter))
                     printVersion(entry);
-            else if (f.getName().endsWith(".class"))
-                printf("%s: %s%n", f.getName(), readVersion(f).toString());
+            else if (f.getName().endsWith(".class")) {
+                if (displayMaxVersion) {
+                    ClassVersion ver = readVersion(f);
+                    if (maxVersion == null || ver.compareTo(maxVersion) > 0) {
+                        maxVersion = ver;
+                    }
+                    else {
+                        printf("%s: %s%n", f.getName(), ver.toString());
+                    }
+                }
+            }
             else if (f.getName().endsWith(".jar"))
                 printVersions(new JarFile(f));
             else
