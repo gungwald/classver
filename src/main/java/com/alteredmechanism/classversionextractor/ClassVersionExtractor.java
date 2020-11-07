@@ -12,12 +12,13 @@ import java.util.jar.JarFile;
 
 public class ClassVersionExtractor {
 
-	private FileFilter javaFilter = new JavaFileFilter();
+	private final FileFilter javaFilter = new JavaFileFilter();
 	private boolean displayMaxVersion = false;
 	private ClassVersion maxVersion = null;
 
 	/**
-	 * @param args
+	 * Executions start here
+	 * @param args Command line arguments provided to program
 	 */
 	public static void main(String[] args) {
 		ClassVersionExtractor cve = new ClassVersionExtractor();
