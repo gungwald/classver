@@ -24,3 +24,5 @@ gradle-app.setting
 
 # Some crap
 .DS_Store
+
+*.o

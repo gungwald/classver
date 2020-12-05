@@ -9,7 +9,7 @@
 
 	<property name="main.class" value="com.alteredmechanism.classversionextractor.ClassVersionExtractor" />
 	<property name="version" value="1.1" />
-	<property name="lang.version" value="1.5" />
+	<property name="lang.version" value="1.6" />
 	<property name="src.dir" value="src/main/java" />
 
         <target name="setup" description="Sets stuff up">

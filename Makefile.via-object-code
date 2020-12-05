@@ -2,21 +2,30 @@ MAIN_CLASS=com.alteredmechanism.classversionextractor.ClassVersionExtractor
 INCLUDES=-Isrc/main/java
 OBJS=ClassVersionExtractor.o ClassVersion.o JavaFileFilter.o
 PROGRAM=classver
+LINUX_DISTRO:=$(shell . /etc/os-release && echo $$ID)
+ifeq ($(LINUX_DISTRO),void)
+	GCJ=gcj-6
+else
+	GCJ=gcj
+endif
 
 $(PROGRAM): $(OBJS)
-	gcj -o $(PROGRAM) $(OBJS) --main=$(MAIN_CLASS)
+	$(GCJ) -o $(PROGRAM) $(OBJS) --main=$(MAIN_CLASS)
 
 ClassVersionExtractor.o: src/main/java/com/alteredmechanism/classversionextractor/ClassVersionExtractor.java
-	gcj -c -o ClassVersionExtractor.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/ClassVersionExtractor.java 
+	$(GCJ) -c -o ClassVersionExtractor.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/ClassVersionExtractor.java 
 	objcopy -L '_ZGr8_$$_dummy' $@
 
 ClassVersion.o: src/main/java/com/alteredmechanism/classversionextractor/ClassVersion.java
-	gcj -c -o ClassVersion.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/ClassVersion.java
+	$(GCJ) -c -o ClassVersion.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/ClassVersion.java
 	objcopy -L '_ZGr8_$$_dummy' $@
 
 JavaFileFilter.o: src/main/java/com/alteredmechanism/classversionextractor/JavaFileFilter.java
-	gcj -c -o JavaFileFilter.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/JavaFileFilter.java
+	$(GCJ) -c -o JavaFileFilter.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/JavaFileFilter.java
 	objcopy -L '_ZGr8_$$_dummy' $@
+
+install: $(PROGRAM)
+	install -s $(PROGRAM) /usr/local/bin
 
 clean:
 	rm -f classver $(OBJS)
