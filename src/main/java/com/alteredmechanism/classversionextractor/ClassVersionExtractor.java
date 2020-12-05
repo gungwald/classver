@@ -32,13 +32,26 @@ public class ClassVersionExtractor {
 	public void printf(String format, Object... args) {
 		System.out.printf(format, args);
 	}
+	
+	public void usage() {
+		System.out.println("usage: classver [options] [file]...");
+		System.out.println();
+		System.out.println("Display the major and minor class versions of compiled .class files");
+		System.out.println();
+		System.out.println("	--help, -h, -?		display this usage information");
+		System.out.println("	-m, --max-version	display the maximum version found at the end");
+		System.out.println();
+	}
 
 	public void printVersions(String[] args) throws IOException {
 		if (args.length == 0) {
 			printVersion(new File(System.getProperty("user.dir")));
 		} else {
 			for (String arg : args) {
-				if (arg.equals("-m")) {
+				if (arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
+					usage();
+				}
+				else if (arg.equalsIgnoreCase("-m") || arg.equalsIgnoreCase("--max-version")) {
 					displayMaxVersion = true;
 				}
 				else {
