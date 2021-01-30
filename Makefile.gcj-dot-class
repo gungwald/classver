@@ -5,8 +5,11 @@ OBJS=ClassVersionExtractor.o ClassVersion.o JavaFileFilter.o
 CLASSES=build/classes/com/alteredmechanism/classversionextractor/*.class
 SOURCES=src/main/java/com/alteredmechanism/classversionextractor/*.java
 LINUX_DISTRO:=$(shell . /etc/os-release && echo $$ID)
+
 ifeq ($(LINUX_DISTRO),void)
 	GCJ=gcj-6
+else ifeq ($(LINUX_DISTRO),ubuntu)
+	GCJ=gcj-5
 else
 	GCJ=gcj
 endif

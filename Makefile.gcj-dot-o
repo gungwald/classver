@@ -3,8 +3,11 @@ INCLUDES=-Isrc/main/java
 OBJS=ClassVersionExtractor.o ClassVersion.o JavaFileFilter.o
 PROGRAM=classver
 LINUX_DISTRO:=$(shell . /etc/os-release && echo $$ID)
+
 ifeq ($(LINUX_DISTRO),void)
 	GCJ=gcj-6
+else ifeq ($(LINUX_DISTRO),ubuntu)
+	GCJ=gcj-5
 else
 	GCJ=gcj
 endif

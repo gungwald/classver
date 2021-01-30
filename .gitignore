@@ -4,6 +4,9 @@
 # Gradle build directory
 build/
 
+# Maven build directory
+target/
+
 # Eclipse build directory
 classes/
 
@@ -26,3 +29,6 @@ gradle-app.setting
 .DS_Store
 
 *.o
+
+# JEdit backup files
+*~
