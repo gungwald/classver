@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -14,10 +16,13 @@ public class ClassVersionExtractor {
 
 	private final FileFilter javaFilter = new JavaFileFilter();
 	private boolean displayMaxVersion = false;
+	private boolean displaySummary = false;
 	private ClassVersion maxVersion = null;
+	private Map<ClassVersion, Integer> versionCounts = new TreeMap<ClassVersion, Integer>();
 
 	/**
 	 * Executions start here
+	 * 
 	 * @param args Command line arguments provided to program
 	 */
 	public static void main(String[] args) {
@@ -32,7 +37,7 @@ public class ClassVersionExtractor {
 	public void printf(String format, Object... args) {
 		System.out.printf(format, args);
 	}
-	
+
 	public void usage() {
 		System.out.println("usage: classver [options] [file]...");
 		System.out.println();
@@ -40,6 +45,7 @@ public class ClassVersionExtractor {
 		System.out.println();
 		System.out.println("	--help, -h, -?		display this usage information");
 		System.out.println("	-m, --max-version	display the maximum version found at the end");
+		System.out.println("	-s, --summary		display a summary of versions found in each file");
 		System.out.println();
 	}
 
@@ -50,16 +56,20 @@ public class ClassVersionExtractor {
 			for (String arg : args) {
 				if (arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
 					usage();
-				}
-				else if (arg.equalsIgnoreCase("-m") || arg.equalsIgnoreCase("--max-version")) {
+				} else if (arg.equalsIgnoreCase("-m") || arg.equalsIgnoreCase("--max-version")) {
 					displayMaxVersion = true;
-				}
-				else {
+				} else if (arg.equalsIgnoreCase("-s") || arg.equalsIgnoreCase("--summary")) {
+					displaySummary = true;
+				} else {
 					printVersion(new File(arg));
 				}
 			}
 			if (displayMaxVersion) {
 				printf("Max version found: %s%n", maxVersion.toString());
+			} else if (displaySummary) {
+				for (ClassVersion ver : versionCounts.keySet()) {
+					printf("Number of %s classes: %d%n", ver.toString(), versionCounts.get(ver));
+				}
 			}
 		}
 	}
@@ -126,11 +136,23 @@ public class ClassVersionExtractor {
 						if (maxVersion == null || v.compareTo(maxVersion) > 0) {
 							maxVersion = v;
 						}
+					} else if (displaySummary) {
+						updateCount(versionCounts, v);
 					} else {
 						printf("%s: %s: %s%n", jar.getName(), entry.getName(), v.toString());
 					}
 				}
 			}
+		}
+	}
+
+	void updateCount(Map<ClassVersion, Integer> versionCount, ClassVersion version) {
+		Integer count = versionCounts.get(version);
+		if (count == null) {
+			versionCounts.put(version, 1);
+		} else {
+			count++;
+			versionCounts.put(version, count);
 		}
 	}
 
@@ -141,13 +163,15 @@ public class ClassVersionExtractor {
 					printVersion(entry);
 				}
 			} else if (f.getName().endsWith(".class")) {
+				ClassVersion ver = readVersion(f);
 				if (displayMaxVersion) {
-					ClassVersion ver = readVersion(f);
 					if (maxVersion == null || ver.compareTo(maxVersion) > 0) {
 						maxVersion = ver;
-					} else {
-						printf("%s: %s%n", f.getName(), ver.toString());
 					}
+				} else if (displaySummary) {
+					updateCount(versionCounts, ver);
+				} else {
+					printf("%s: %s%n", f.getName(), ver.toString());
 				}
 			} else if (f.getName().endsWith(".jar")) {
 				printVersions(new JarFile(f));
