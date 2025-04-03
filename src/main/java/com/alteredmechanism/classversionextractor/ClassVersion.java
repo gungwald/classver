@@ -18,56 +18,75 @@ import java.util.Map;
  * 
  * @author bill
  */
-enum ClassVersion {
-	JAVA_1_1(45, 1.1f),
-	JAVA_1_2(46, 1.2f),
-	JAVA_1_3(47, 1.3f),
-	JAVA_1_4(48, 1.4f),
-	JAVA_5(49, 5),
-	JAVA_6(50, 6),
-	JAVA_7(51, 7),
-	JAVA_8(52, 8);
+public class ClassVersion {
+
+	public static final int MAJOR_PROD_DIFF = 44;
+
+	private final int majorVersion;
+	private final float[] productVersionNumbers;
 	
-	private int majorVersion;
-	private float[] productVersionNumbers;
-	
-	static private Map<Integer,ClassVersion> majorVersionMap = new HashMap<Integer,ClassVersion>();
-	static private Map<Float,ClassVersion> productVersionMap = new HashMap<Float,ClassVersion>();
+	private static final Map<Integer,ClassVersion> majorVersionMap = new HashMap<Integer, ClassVersion>();
+	private static final Map<Float,ClassVersion> productVersionMap = new HashMap<Float, ClassVersion>();
 	
 	static {
-		for (ClassVersion v : values()) {
-			majorVersionMap.put(v.majorVersion, v);
-			for (float productVersion : v.getProductVersions()) {
-				productVersionMap.put(productVersion, v);
-			}
+		int[] specialMajorVersions = new int[]{45,46,47,48};
+		float[] specialProductVersions = new float[]{1.1f,1.2f,1.3f,1.4f};
+		for (int i = 0; i < specialMajorVersions.length; i++) {
+			ClassVersion cv = new ClassVersion(specialMajorVersions[i],specialProductVersions[i]);
+			majorVersionMap.put(specialMajorVersions[i], cv);
+			productVersionMap.put(specialProductVersions[i], cv);
+		}
+		for (int mv = 5; mv < 40; mv++) {
+			float pv = mv - MAJOR_PROD_DIFF;
+			ClassVersion cv = new ClassVersion(mv, pv);
+			majorVersionMap.put(mv, cv);
+			productVersionMap.put(pv, cv);
 		}
 	}
-	
-	private ClassVersion(int majorVersion, float ... productVersionNumbers) {
+
+	/**
+	 * This class controls all instances
+	 *
+	 * @param majorVersion Java class byte-code version number
+	 * @param productVersionNumbers Java product version numbers
+	 */
+	private ClassVersion(int majorVersion, float... productVersionNumbers) {
 		this.majorVersion = majorVersion;
 		this.productVersionNumbers = productVersionNumbers;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public int getMajorVersion() {
 		return majorVersion;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public float getProductVersion() {
 		return productVersionNumbers[0];
 	}
-	
+
+	@SuppressWarnings("unused")
 	public String getProductName() {
 		return "Java " + productVersionNumbers[0];
 	}
-	
+
+	@SuppressWarnings("unused")
 	public float[] getProductVersions() {
 		return productVersionNumbers;
 	}
 	
 	public static ClassVersion lookupByMajorVersion(int majorVersion) {
-		return majorVersionMap.get(majorVersion);
+		ClassVersion cv;
+		cv = majorVersionMap.get(majorVersion);
+		if (cv == null) {
+			cv = new ClassVersion(majorVersion, majorVersion - MAJOR_PROD_DIFF);
+			majorVersionMap.put(majorVersion, cv);
+			productVersionMap.put(cv.productVersionNumbers[0], cv);
+		}
+		return cv;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public static ClassVersion lookupByProductVersion(float productVersion) {
 		return productVersionMap.get(productVersion);
 	}
@@ -75,5 +94,9 @@ enum ClassVersion {
 	@Override
 	public String toString() {
 		return String.format("%s (major version: %d)", getProductName(), majorVersion);
+	}
+
+	public int compareTo(ClassVersion maxVersion) {
+		return Integer.compare(this.majorVersion, maxVersion.majorVersion);
 	}
 }

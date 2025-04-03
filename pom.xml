@@ -10,6 +10,17 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- For compiling with Java 8 and below -->
+    <maven.compiler.source>5</maven.compiler.source>
+    <maven.compiler.target>5</maven.compiler.target>
+    <!-- For compiling with Java 8 and below -->
+
+    <!-- For compiling with Java 9 and above -->
+    <!--
+    <maven.compiler.release>8</maven.compiler.release>
+    -->
+    <!-- For compiling with Java 9 and above -->
   </properties>
 
   <build>
