@@ -8,7 +8,7 @@
 <project name="classver" default="jar" basedir=".">
 
 	<property name="main.class" value="com.alteredmechanism.class_version.ClassVersionExtractor" />
-	<property name="version" value="1.1" />
+	<property name="version" value="2.0.0"/>
 	<property name="lang.version" value="1.5" />
 	<property name="src.dir" value="src/main/java" />
 	<property name="java.compiler" value="${user.home}/Dropbox/opt/jdk1.5.0/jdk1.5.0_22/bin/javac" />
@@ -65,7 +65,7 @@
 		<mkdir dir="${bld.dist.dir}"/>
 		<move file="build/libs" tofile="build/lib"/>
 		<zip destfile="${bld.dist.dir}/${ant.project.name}-${version}-bin.zip">
-			<fileset dir="${dist.dir}" includes="bin/${ant.project.name}"/>
+			<fileset dir="${dist.dir}" includes="bin/*"/>
 			<fileset dir="build" includes="lib/${ant.project.name}-${version}.jar"/>
 		</zip>
 		<move file="build/lib" tofile="build/libs"/>
