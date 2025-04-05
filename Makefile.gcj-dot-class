@@ -1,4 +1,4 @@
-MAIN_CLASS=com.alteredmechanism.classversionextractor.ClassVersionExtractor
+MAIN_CLASS=com.alteredmechanism.class_version.ClassVersionExtractor
 SRC_DIR=src/main/java
 INCLUDES=-I$(SRC_DIR)
 OBJS=ClassVersionExtractor.o ClassVersion.o JavaFileFilter.o

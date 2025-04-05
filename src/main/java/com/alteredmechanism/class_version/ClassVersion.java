@@ -1,4 +1,4 @@
-package com.alteredmechanism.classversionextractor;
+package com.alteredmechanism.class_version;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -97,6 +97,6 @@ public class ClassVersion {
 	}
 
 	public int compareTo(ClassVersion maxVersion) {
-		return Integer.compare(this.majorVersion, maxVersion.majorVersion);
+		return this.majorVersion - maxVersion.majorVersion;
 	}
 }

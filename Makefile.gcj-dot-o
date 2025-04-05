@@ -1,4 +1,4 @@
-MAIN_CLASS=com.alteredmechanism.classversionextractor.ClassVersionExtractor
+MAIN_CLASS=com.alteredmechanism.class_version.ClassVersionExtractor
 INCLUDES=-Isrc/main/java
 OBJS=ClassVersionExtractor.o ClassVersion.o JavaFileFilter.o
 PROGRAM=classver

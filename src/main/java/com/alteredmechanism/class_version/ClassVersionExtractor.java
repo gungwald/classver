@@ -1,4 +1,4 @@
-package com.alteredmechanism.classversionextractor;
+package com.alteredmechanism.class_version;
 
 import java.io.DataInputStream;
 import java.io.File;
