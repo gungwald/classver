@@ -1,4 +1,4 @@
-package com.alteredmechanism.class_version;
+package com.alteredmechanism.classver;
 
 import java.util.HashMap;
 import java.util.Map;

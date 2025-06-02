@@ -1,4 +1,4 @@
-package com.alteredmechanism.class_version;
+package com.alteredmechanism.classver;
 
 import java.io.File;
 import java.io.FileFilter;

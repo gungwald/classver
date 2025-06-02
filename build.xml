@@ -8,7 +8,7 @@
 <project name="classver" default="jar" basedir=".">
 
 	<property name="vendor" value="Altered Mechanism"/>
-	<property name="main.class" value="com.alteredmechanism.class_version.ClassVersionExtractor" />
+	<property name="main.class" value="com.alteredmechanism.classver.ClassVersionExtractor" />
 	<property name="version" value="2.0.0"/>
 	<property name="lang.version" value="1.5" />
 	<property name="src.dir" value="src/main/java" />
@@ -48,7 +48,7 @@
 				<attribute name="Implementation-Title" value="${ant.project.name}" />
 				<attribute name="Implementation-Version" value="${version}" />
 				<attribute name="Implementation-Vendor" value="${vendor}" />
-				<section name="com.alteredmechanism.class_version">
+				<section name="com.alteredmechanism.classver">
 					<attribute name="Specification-Title" value="${ant.project.name}" />
 					<attribute name="Specification-Version" value="${version}" />
 					<attribute name="Specification-Vendor" value="${vendor}" />

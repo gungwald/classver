@@ -1,9 +1,10 @@
-MAIN_CLASS=com.alteredmechanism.class_version.ClassVersionExtractor
+MAIN_CLASS=com.alteredmechanism.classver.ClassVersionExtractor
 SRC_DIR=src/main/java
 INCLUDES=-I$(SRC_DIR)
 OBJS=ClassVersionExtractor.o ClassVersion.o JavaFileFilter.o
-CLASSES=build/classes/com/alteredmechanism/classversionextractor/*.class
-SOURCES=src/main/java/com/alteredmechanism/classversionextractor/*.java
+PKG_PATH=com/alteredmechanism/classver
+CLASSES=build/classes/$PKG_PATH/*.class
+SOURCES=src/main/java/$PKG_PATH/*.java
 LINUX_DISTRO:=$(shell . /etc/os-release && echo $$ID)
 
 ifeq ($(LINUX_DISTRO),void)

@@ -1,8 +1,9 @@
-MAIN_CLASS=com.alteredmechanism.class_version.ClassVersionExtractor
+MAIN_CLASS=com.alteredmechanism.classver.ClassVersionExtractor
 INCLUDES=-Isrc/main/java
 OBJS=ClassVersionExtractor.o ClassVersion.o JavaFileFilter.o
 PROGRAM=classver
 LINUX_DISTRO:=$(shell . /etc/os-release && echo $$ID)
+PKG_PATH=com/alteredmechanism/classver
 
 ifeq ($(LINUX_DISTRO),void)
 	GCJ=gcj-6
@@ -15,16 +16,16 @@ endif
 $(PROGRAM): $(OBJS)
 	$(GCJ) -o $(PROGRAM) $(OBJS) --main=$(MAIN_CLASS)
 
-ClassVersionExtractor.o: src/main/java/com/alteredmechanism/classversionextractor/ClassVersionExtractor.java
-	$(GCJ) -c -o ClassVersionExtractor.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/ClassVersionExtractor.java 
+ClassVersionExtractor.o: src/main/java/$PKG_PATH/ClassVersionExtractor.java
+	$(GCJ) -c -o ClassVersionExtractor.o $(INCLUDES) src/main/java/$PKG_PATH/ClassVersionExtractor.java
 	objcopy -L '_ZGr8_$$_dummy' $@
 
-ClassVersion.o: src/main/java/com/alteredmechanism/classversionextractor/ClassVersion.java
-	$(GCJ) -c -o ClassVersion.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/ClassVersion.java
+ClassVersion.o: src/main/java/$PKG_PATH/ClassVersion.java
+	$(GCJ) -c -o ClassVersion.o $(INCLUDES) src/main/java/$PKG_PATH/ClassVersion.java
 	objcopy -L '_ZGr8_$$_dummy' $@
 
-JavaFileFilter.o: src/main/java/com/alteredmechanism/classversionextractor/JavaFileFilter.java
-	$(GCJ) -c -o JavaFileFilter.o $(INCLUDES) src/main/java/com/alteredmechanism/classversionextractor/JavaFileFilter.java
+JavaFileFilter.o: src/main/java/$PKG_PATH/JavaFileFilter.java
+	$(GCJ) -c -o JavaFileFilter.o $(INCLUDES) src/main/java/$PKG_PATH/JavaFileFilter.java
 	objcopy -L '_ZGr8_$$_dummy' $@
 
 install: $(PROGRAM)
