@@ -9,6 +9,5 @@
         <module name="classver" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.5" />
   </component>
 </project>

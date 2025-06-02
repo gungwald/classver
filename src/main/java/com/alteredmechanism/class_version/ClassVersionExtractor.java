@@ -8,17 +8,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 public class ClassVersionExtractor {
 
 	private final FileFilter javaFilter = new JavaFileFilter();
+	private boolean displayManifest = false;
 	private boolean displayMaxVersion = false;
 	private boolean displaySummary = false;
+	private boolean displayJarEntriesTooSmall = false;
 	private ClassVersion maxVersion = null;
-	private Map<ClassVersion, Integer> versionCounts = new TreeMap<ClassVersion, Integer>();
+	private final Map<ClassVersion, Integer> versionCounts = new TreeMap<ClassVersion, Integer>();
 
 	/**
 	 * Executions start here
@@ -30,7 +35,9 @@ public class ClassVersionExtractor {
 		try {
 			cve.printVersions(args);
 		} catch (Exception e) {
-			e.printStackTrace();
+			// This is a user-facing app, not a service that does logging
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
 		}
 	}
 
@@ -41,11 +48,13 @@ public class ClassVersionExtractor {
 	public void usage() {
 		System.out.println("usage: classver [options] [file]...");
 		System.out.println();
-		System.out.println("Display the major and minor class versions of compiled .class files");
+		System.out.println("Display the major class versions of compiled .class files");
 		System.out.println();
-		System.out.println("	--help, -h, -?		display this usage information");
+		System.out.println("	-h, -?, --help		display this usage information");
+		System.out.println("	-f, --manifest		display the manifest of a single jar");
 		System.out.println("	-m, --max-version	display the maximum version found at the end");
 		System.out.println("	-s, --summary		display a summary of versions found in each file");
+		System.out.println("    -t, --too-small     display jar entries that are too small");
 		System.out.println();
 	}
 
@@ -56,10 +65,14 @@ public class ClassVersionExtractor {
 			for (String arg : args) {
 				if (arg.equalsIgnoreCase("--help") || arg.equalsIgnoreCase("-h") || arg.equalsIgnoreCase("-?")) {
 					usage();
+				} else if (arg.equalsIgnoreCase("-f") || arg.equalsIgnoreCase("--manifest")) {
+					displayManifest = true;
 				} else if (arg.equalsIgnoreCase("-m") || arg.equalsIgnoreCase("--max-version")) {
 					displayMaxVersion = true;
 				} else if (arg.equalsIgnoreCase("-s") || arg.equalsIgnoreCase("--summary")) {
 					displaySummary = true;
+				} else if (arg.equalsIgnoreCase("-t") || arg.equalsIgnoreCase("--too-small")) {
+					displayJarEntriesTooSmall = true;
 				} else {
 					printVersion(new File(arg));
 				}
@@ -68,12 +81,13 @@ public class ClassVersionExtractor {
 				printf("Max version found: %s%n", maxVersion.toString());
 			} else if (displaySummary) {
 				for (ClassVersion ver : versionCounts.keySet()) {
-					printf("Number of %s classes: %d%n", ver.toString(), versionCounts.get(ver));
+					printf("Number of %s classes (having major version %d): %d%n", ver.getProductName(), ver.getMajorVersion(), versionCounts.get(ver));
 				}
 			}
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void printVersions(File[] files) throws IOException {
 		for (File file : files)
 			printVersion(file);
@@ -98,7 +112,7 @@ public class ClassVersionExtractor {
 	}
 
 	public ClassVersion readVersion(File f) throws IOException {
-		ClassVersion v = null;
+		ClassVersion v;
 		InputStream in = new FileInputStream(f);
 		try {
 			v = readVersion(in);
@@ -113,37 +127,77 @@ public class ClassVersionExtractor {
 			try {
 				in.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+                //noinspection CallToPrintStackTrace
+                e.printStackTrace();
+			}
+		}
+	}
+
+	public void printApplicationVersion(JarFile jar) throws IOException {
+		Manifest manifest = jar.getManifest();
+		if (manifest == null) {
+			printf("%s: No manifest in which to find application version%n", jar.getName());
+		} else {
+			Attributes mainAttrs = manifest.getMainAttributes();
+			Object specVersion = mainAttrs.get("Specification-Version");
+			if (specVersion != null) {
+				printf("%s: Specification-Version=%s%n", jar.getName(), specVersion);
+			}
+			Object implVersion = mainAttrs.get("Implementation-Version");
+			if (implVersion != null) {
+				printf("%s: Implementation-Version=%s%n", jar.getName(), implVersion);
+			}
+		}
+	}
+
+	public void printManifest(JarFile jar) throws IOException {
+		Manifest manifest = jar.getManifest();
+		if (manifest == null) {
+			printf("%s: No manifest%n", jar.getName());
+		} else {
+			Attributes mainAttrs = manifest.getMainAttributes();
+			for (Map.Entry<Object,Object> attr : mainAttrs.entrySet()) {
+				printf("%s: Main Attribute: %s=%s%n", jar.getName(), attr.getKey(), attr.getValue());
+			}
+			for (Map.Entry<String,Attributes> section : manifest.getEntries().entrySet()) {
+				printf("%s: Manifest Section: %s%n", jar.getName(), section.getKey());
+				for (Map.Entry<Object,Object> attr : section.getValue().entrySet()) {
+					printf("%s: %s=%s%n", jar.getName(), attr.getKey(), attr.getValue());
+				}
 			}
 		}
 	}
 
 	public void printVersions(JarFile jar) throws IOException {
+		printApplicationVersion(jar);
 		Enumeration<? extends JarEntry> entries = jar.entries();
 		while (entries.hasMoreElements()) {
 			JarEntry entry = entries.nextElement();
-			if (entry.isDirectory()) {
-				continue;
-			} else if (entry.getSize() < 10) {
-				printf("%s: %s: Entry to small%n", jar.getName(), entry.getName());
-			} else if (entry.getName().endsWith(".class")) {
-				InputStream in = jar.getInputStream(entry);
-				ClassVersion v = readVersion(in);
-				if (v == null) {
-					printf("%s: %s: Can't read version%n", jar.getName(), entry.getName());
-				} else {
-					if (displayMaxVersion) {
-						if (maxVersion == null || v.compareTo(maxVersion) > 0) {
-							maxVersion = v;
-						}
-					} else if (displaySummary) {
-						updateCount(versionCounts, v);
-					} else {
-						printf("%s: %s: %s%n", jar.getName(), entry.getName(), v.toString());
-					}
+            if (!entry.isDirectory()) {
+				if (entry.getName().endsWith(".jar")) {
+					printf("%s: %s: Can't process jar-in-jar yet%n", jar.getName(), entry.getName());
 				}
-			}
-		}
+                if (entry.getSize() < 10 && displayJarEntriesTooSmall) {
+                    printf("%s: %s: Entry to small%n", jar.getName(), entry.getName());
+                } else if (entry.getName().endsWith(".class")) {
+                    InputStream in = jar.getInputStream(entry);
+                    ClassVersion v = readVersion(in);
+                    if (v == null) {
+                        printf("%s: %s: Can't read version%n", jar.getName(), entry.getName());
+                    } else {
+                        if (displayMaxVersion) {
+                            if (maxVersion == null || v.compareTo(maxVersion) > 0) {
+                                maxVersion = v;
+                            }
+                        } else if (displaySummary) {
+                            updateCount(versionCounts, v);
+                        } else {
+                            printf("%s: %s: %s%n", jar.getName(), entry.getName(), v.toString());
+                        }
+                    }
+                }
+            }
+        }
 	}
 
 	void updateCount(Map<ClassVersion, Integer> versionCount, ClassVersion version) {
@@ -159,8 +213,11 @@ public class ClassVersionExtractor {
 	public void printVersion(File f) throws IOException {
 		if (f.exists()) {
 			if (f.isDirectory()) {
-				for (File entry : f.listFiles(javaFilter)) {
-					printVersion(entry);
+				File[] files = f.listFiles(javaFilter);
+				if (files != null) {
+					for (File entry : files) {
+						printVersion(entry);
+					}
 				}
 			} else if (f.getName().endsWith(".class")) {
 				ClassVersion ver = readVersion(f);
@@ -174,7 +231,12 @@ public class ClassVersionExtractor {
 					printf("%s: %s%n", f.getName(), ver.toString());
 				}
 			} else if (f.getName().endsWith(".jar")) {
-				printVersions(new JarFile(f));
+				JarFile jar = new JarFile(f);
+				if (displayManifest) {
+					printManifest(jar);
+				} else {
+					printVersions(jar);
+				}
 			} else {
 				printf("%s: file type has no Java version%n", f.getCanonicalPath());
 			}

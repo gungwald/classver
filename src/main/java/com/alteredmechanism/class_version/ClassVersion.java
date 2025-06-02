@@ -18,9 +18,9 @@ import java.util.Map;
  * 
  * @author bill
  */
-public class ClassVersion {
+public class ClassVersion implements Comparable<ClassVersion> {
 
-	public static final int MAJOR_PROD_DIFF = 44;
+	public static final int MAJOR_VER_TO_PRODUCT_VER_DIFFERENCE = 44;
 
 	private final int majorVersion;
 	private final float[] productVersionNumbers;
@@ -36,11 +36,12 @@ public class ClassVersion {
 			majorVersionMap.put(specialMajorVersions[i], cv);
 			productVersionMap.put(specialProductVersions[i], cv);
 		}
-		for (int mv = 5; mv < 40; mv++) {
-			float pv = mv - MAJOR_PROD_DIFF;
-			ClassVersion cv = new ClassVersion(mv, pv);
-			majorVersionMap.put(mv, cv);
-			productVersionMap.put(pv, cv);
+		/* Calculate product version from the fixed relationship with major versions */
+		for (int majorVersion = 5; majorVersion < 40; majorVersion++) {
+			float productVersion = majorVersion - MAJOR_VER_TO_PRODUCT_VER_DIFFERENCE;
+			ClassVersion classVersion = new ClassVersion(majorVersion, productVersion);
+			majorVersionMap.put(majorVersion, classVersion);
+			productVersionMap.put(productVersion, classVersion);
 		}
 	}
 
@@ -60,14 +61,30 @@ public class ClassVersion {
 		return majorVersion;
 	}
 
+	public static boolean isInteger(float f) {
+		return f - Math.floor(f) == 0;
+	}
+
 	@SuppressWarnings("unused")
+	public String getFormattedProductVersion() {
+		float version = getProductVersion();
+		int versionFloor = (int) Math.floor(version);
+		String fmtd;
+		if (version - versionFloor == 0) {
+			fmtd = String.valueOf(versionFloor);
+		} else {
+			fmtd = String.valueOf(version);
+		}
+		return fmtd;
+	}
+
 	public float getProductVersion() {
 		return productVersionNumbers[0];
 	}
 
 	@SuppressWarnings("unused")
 	public String getProductName() {
-		return "Java " + productVersionNumbers[0];
+		return "Java " + getFormattedProductVersion();
 	}
 
 	@SuppressWarnings("unused")
@@ -79,7 +96,7 @@ public class ClassVersion {
 		ClassVersion cv;
 		cv = majorVersionMap.get(majorVersion);
 		if (cv == null) {
-			cv = new ClassVersion(majorVersion, majorVersion - MAJOR_PROD_DIFF);
+			cv = new ClassVersion(majorVersion, majorVersion - MAJOR_VER_TO_PRODUCT_VER_DIFFERENCE);
 			majorVersionMap.put(majorVersion, cv);
 			productVersionMap.put(cv.productVersionNumbers[0], cv);
 		}
@@ -90,13 +107,31 @@ public class ClassVersion {
 	public static ClassVersion lookupByProductVersion(float productVersion) {
 		return productVersionMap.get(productVersion);
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof ClassVersion)) return false;
+		ClassVersion that = (ClassVersion) o;
+		return majorVersion == that.majorVersion;
+	}
+
+	@Override
+	public int hashCode() {
+		return majorVersion;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s (major version: %d)", getProductName(), majorVersion);
 	}
 
+	/**
+	 * Implements method required by Comparable interface
+	 * @param maxVersion the object to be compared.
+	 * @return
+	 */
 	public int compareTo(ClassVersion maxVersion) {
 		return this.majorVersion - maxVersion.majorVersion;
 	}
+
 }
