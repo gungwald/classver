@@ -9,7 +9,7 @@
 
 	<property name="vendor" value="Altered Mechanism"/>
 	<property name="main.class" value="com.alteredmechanism.classver.ClassVersionExtractor" />
-	<property name="version" value="2.0.0"/>
+	<property name="version" value="3.0.0"/>
 	<property name="lang.version" value="1.5" />
 	<property name="src.dir" value="src/main/java" />
 	<property name="java.compiler" value="${user.home}/Dropbox/opt/jdk1.5.0/jdk1.5.0_22/bin/javac" />
@@ -25,7 +25,7 @@
 	<property name="dist.dir" value="src/main/dist" />
 	<property name="cls.dir" value="build/classes" />
     <property name="libs.dir" value="build/libs" />
-	<property name="app.jar" value="${libs.dir}/${ant.project.name}-${version}.jar"/>
+	<property name="jar" value="${libs.dir}/${ant.project.name}.jar"/>
 	<property name="run.script" value="${dist.dir}/bin/${ant.project.name}" />
 	<property name="sys.install.dir" value="/usr/local" />
 	<property name="bld.dist.dir" value="build/distribution" />
@@ -37,7 +37,9 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Builds an executable jar file">
-		<jar destfile="${app.jar}" basedir="${cls.dir}">
+		<!-- The attribute update="false" makes sure no old classes will exist
+		     in the new jar file. -->
+		<jar destfile="${jar}" basedir="${cls.dir}" update="false">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Main-Class" value="${main.class}" />
@@ -66,7 +68,7 @@
 		<copy file="${run.script}" todir="${user.home}/bin" preservelastmodified="true"/>
 		<chmod file="${user.home}/bin/${ant.project.name}" perm="ugo+rx"/>
 		<mkdir dir="${user.home}/lib"/>
-		<copy file="${app.jar}" todir="${user.home}/lib" preservelastmodified="true" />
+		<copy file="${jar}" todir="${user.home}/lib" preservelastmodified="true" />
 		<exec dir="${user.home}/bin" executable="cmd.exe" osfamily="windows" >
 			<arg line="${dist.dir}/bin/addtopath.bat"/>
 		</exec>
@@ -77,7 +79,7 @@
 		<copy file="${run.script}" todir="${sys.install.dir}/bin" preservelastmodified="true" />
 		<chmod file="${sys.install.dir}/bin/${ant.project.name}" perm="ugo+rx"/>
 		<mkdir dir="${sys.install.dir}/lib"/>
-		<copy file="${app.jar}" todir="${sys.install.dir}/lib" preservelastmodified="true"/>
+		<copy file="${jar}" todir="${sys.install.dir}/lib" preservelastmodified="true"/>
 	</target>
     
 	<target name="distZip" depends="jar" description="Build a zip file with just binaries for distribution to users">

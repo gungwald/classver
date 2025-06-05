@@ -14,6 +14,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+// This is a user-facing app, not a service that needs to write to a log.
+// So, it should call printStackTrace.
+@SuppressWarnings("CallToPrintStackTrace")
 public class ClassVersionExtractor {
 
 	private final FileFilter javaFilter = new JavaFileFilter();
@@ -34,8 +37,6 @@ public class ClassVersionExtractor {
 		try {
 			cve.printVersions(args);
 		} catch (Exception e) {
-			// This is a user-facing app, not a service that does logging
-            //noinspection CallToPrintStackTrace
             e.printStackTrace();
 		}
 	}
@@ -43,18 +44,38 @@ public class ClassVersionExtractor {
 	public void printf(String format, Object... args) {
 		System.out.printf(format, args);
 	}
+	public void println() {
+		System.out.println();
+	}
+	public void println(String line) {
+		System.out.println(line);
+	}
 
 	public void usage() {
-		System.out.println("usage: classver [options] [file]...");
-		System.out.println();
-		System.out.println("Display the major class versions of compiled .class files");
-		System.out.println();
-		System.out.println("	-h, -?, --help		display this usage information");
-		System.out.println("	-f, --manifest		display the manifest of a single jar");
-		System.out.println("	-m, --max-version	display the maximum version found at the end");
-		System.out.println("	-s, --summary		display a summary of versions found in each file");
-		System.out.println("    -t, --too-small     display jar entries that are too small");
-		System.out.println();
+		println();
+		println("NAME");
+		println("   classver.bat - Windows batch file wrapper");
+		println("   classver     - Linux/UN*X shell script wrapper");
+		println("   classver.jar - Runnable Java ARchive program");
+		println();
+		println("DESCRIPTION");
+		println("   Displays the major class versions of compiled .class files");
+		println("   recursively through subdirectories and JAR files.");
+		println();
+		println("INVOCATION");
+		println("   To run from a batch file or shell script:");
+		println("      classver [options] [file]...");
+		println();
+		println("   To run directly from Java:");
+		println("      java -jar classver.jar [options] [file]...");
+		println();
+		println("   options: ");
+		println("      -h, -?, --help    Displays this usage information");
+		println("      -f, --manifest    Displays the manifest of a single jar");
+		println("      -m, --max-version Displays the maximum version found at the end");
+		println("      -s, --summary     Displays a summary of versions found in each file");
+		println("      -t, --too-small   Displays jar entries that are too small");
+		println();
 	}
 
 	public void printVersions(String[] args) throws IOException {
@@ -126,7 +147,6 @@ public class ClassVersionExtractor {
 			try {
 				in.close();
 			} catch (Exception e) {
-                //noinspection CallToPrintStackTrace
                 e.printStackTrace();
 			}
 		}
@@ -189,7 +209,7 @@ public class ClassVersionExtractor {
                                 maxVersion = v;
                             }
                         } else if (displaySummary) {
-                            updateCount(versionCounts, v);
+                            updateCount(v);
                         } else {
                             printf("%s: %s: %s%n", jar.getName(), entry.getName(), v.toString());
                         }
@@ -199,7 +219,7 @@ public class ClassVersionExtractor {
         }
 	}
 
-	void updateCount(Map<ClassVersion, Integer> versionCount, ClassVersion version) {
+	void updateCount(ClassVersion version) {
 		Integer count = versionCounts.get(version);
 		if (count == null) {
 			versionCounts.put(version, 1);
@@ -225,7 +245,7 @@ public class ClassVersionExtractor {
 						maxVersion = ver;
 					}
 				} else if (displaySummary) {
-					updateCount(versionCounts, ver);
+					updateCount(ver);
 				} else {
 					printf("%s: %s%n", f.getName(), ver.toString());
 				}

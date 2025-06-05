@@ -61,6 +61,7 @@ public class ClassVersion implements Comparable<ClassVersion> {
 		return majorVersion;
 	}
 
+	@SuppressWarnings("unused")
 	public static boolean isInteger(float f) {
 		return f - Math.floor(f) == 0;
 	}
@@ -127,11 +128,11 @@ public class ClassVersion implements Comparable<ClassVersion> {
 
 	/**
 	 * Implements method required by Comparable interface
-	 * @param maxVersion the object to be compared.
-	 * @return
+	 * @param other the object to be compared.
+	 * @return Normal compareTo stuff
 	 */
-	public int compareTo(ClassVersion maxVersion) {
-		return this.majorVersion - maxVersion.majorVersion;
+	public int compareTo(ClassVersion other) {
+		return this.majorVersion - other.majorVersion;
 	}
 
 }
