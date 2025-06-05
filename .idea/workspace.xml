@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c80b83dc-b2ef-44cd-98a4-e01c467acd01" name="Changes" comment="Fixed warnings, improved usage doc">
+    <list default="true" id="c80b83dc-b2ef-44cd-98a4-e01c467acd01" name="Changes" comment="Fixed display of jar versions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/alteredmechanism/classver/ClassVersionExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/alteredmechanism/classver/ClassVersionExtractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/dist/bin/classver" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/dist/bin/classver" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/dist/bin/classver.bat" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/dist/bin/classver.bat" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,20 +39,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.ClassVersionExtractor.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/bill/git/wallpaper-switcher&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor.code.editing&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ClassVersionExtractor.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/bill/git/wallpaper-switcher",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="ClassVersionExtractor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.alteredmechanism.classver.ClassVersionExtractor" />
@@ -106,7 +107,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749105264724</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fixed display of jar versions">
+      <option name="closed" value="true" />
+      <created>1749108609571</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1749108609571</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -124,6 +133,7 @@
     <MESSAGE value="Application versions" />
     <MESSAGE value="Refactor package to classver" />
     <MESSAGE value="Fixed warnings, improved usage doc" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed warnings, improved usage doc" />
+    <MESSAGE value="Fixed display of jar versions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed display of jar versions" />
   </component>
 </project>
