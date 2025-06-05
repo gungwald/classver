@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c80b83dc-b2ef-44cd-98a4-e01c467acd01" name="Changes" comment="Fixed display of jar versions">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="c80b83dc-b2ef-44cd-98a4-e01c467acd01" name="Changes" comment="Wrapper scripts search for jar">
       <change beforePath="$PROJECT_DIR$/src/main/dist/bin/classver" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/dist/bin/classver" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/dist/bin/classver.bat" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/dist/bin/classver.bat" afterDir="false" />
     </list>
@@ -115,7 +114,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749108609571</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Wrapper scripts search for jar">
+      <option name="closed" value="true" />
+      <created>1749121131285</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1749121131285</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -134,6 +141,7 @@
     <MESSAGE value="Refactor package to classver" />
     <MESSAGE value="Fixed warnings, improved usage doc" />
     <MESSAGE value="Fixed display of jar versions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed display of jar versions" />
+    <MESSAGE value="Wrapper scripts search for jar" />
+    <option name="LAST_COMMIT_MESSAGE" value="Wrapper scripts search for jar" />
   </component>
 </project>

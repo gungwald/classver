@@ -1,22 +1,40 @@
 #!/bin/sh
 
-BIN_DIR=`dirname "$0"`
-if [ "$BIN_DIR" = '.' ]; then
-    BIN_DIR=`pwd`
-fi
-TOP_DIR=`dirname "$BIN_DIR"`
-THIS=`basename "$0"`
+# shellcheck disable=SC2006
 
-APP=com.alteredmechanism.classversionextractor.ClassVersionExtractor
-CLASSES_DIR="$HOME"/git/classver/build/classes/main
-MAIN_CLASS_FILE=${APP//.//}.class
-VERSION=2.0.0
-JAR="$THIS"-"$VERSION".jar
+getAbsolutePath()
+(
+  cd "`dirname "$1"`" || exit
+  pwd
+)
 
-if [ -f "$CLASSES_DIR/$MAIN_CLASS_FILE" ]
-then
-    exec java -cp "$CLASSES_DIR" $APP "$@"
-else
-    exec java -jar "$TOP_DIR"/lib/"$JAR" "$@"
-fi
+debug()
+{
+  if [ -n "$DEBUG" ]
+  then
+    # shellcheck disable=SC2048
+    echo "$*"
+  fi
+}
 
+THIS_SCRIPT=`basename "$0"`
+THIS_SCRIPT_DIR=`getAbsolutePath "$0"`
+TOP_DIR=`dirname "$THIS_SCRIPT_DIR"`
+LIB_DIR="$TOP_DIR"/lib
+JAR_NAME="$THIS_SCRIPT".jar
+BUILD_LIB_DIR="$TOP_DIR"/../../../build/libs
+
+# Find the the jar.
+for SEARCH_DIR in "$THIS_SCRIPT_DIR" "$LIB_DIR" "$BUILD_LIB_DIR"
+do
+  MAYBE_EXISTS_JAR="$SEARCH_DIR"/"$JAR_NAME"
+  if [ -f "$MAYBE_EXISTS_JAR" ]
+  then
+    debug JAR exists: $MAYBE_EXISTS_JAR
+    java -jar "$MAYBE_EXISTS_JAR" "$@"
+    exit
+  else
+    debug JAR does not exist: $MAYBE_EXISTS_JAR
+  fi
+done
+echo No $JAR_NAME file found
