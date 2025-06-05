@@ -22,6 +22,7 @@ public class ClassVersionExtractor {
 	private final FileFilter javaFilter = new JavaFileFilter();
 	private boolean displayManifest = false;
 	private boolean displayMaxVersion = false;
+	private boolean displayJarVersion = false;
 	private boolean displaySummary = false;
 	private boolean displayJarEntriesTooSmall = false;
 	private ClassVersion maxVersion = null;
@@ -72,6 +73,7 @@ public class ClassVersionExtractor {
 		println("   options: ");
 		println("      -h, -?, --help    Displays this usage information");
 		println("      -f, --manifest    Displays the manifest of a single jar");
+		println("      -j, --jar-version Displays spec-ver and impl-ver in jar manifest");
 		println("      -m, --max-version Displays the maximum version found at the end");
 		println("      -s, --summary     Displays a summary of versions found in each file");
 		println("      -t, --too-small   Displays jar entries that are too small");
@@ -87,6 +89,8 @@ public class ClassVersionExtractor {
 					usage();
 				} else if (arg.equalsIgnoreCase("-f") || arg.equalsIgnoreCase("--manifest")) {
 					displayManifest = true;
+				} else if (arg.equalsIgnoreCase("-j") || arg.equalsIgnoreCase("--jar-version")) {
+					displayJarVersion = true;
 				} else if (arg.equalsIgnoreCase("-m") || arg.equalsIgnoreCase("--max-version")) {
 					displayMaxVersion = true;
 				} else if (arg.equalsIgnoreCase("-s") || arg.equalsIgnoreCase("--summary")) {
@@ -152,23 +156,24 @@ public class ClassVersionExtractor {
 		}
 	}
 
-	public void printApplicationVersion(JarFile jar) throws IOException {
+	public void printJarVersion(JarFile jar) throws IOException {
 		Manifest manifest = jar.getManifest();
 		if (manifest == null) {
 			printf("%s: No manifest in which to find application version%n", jar.getName());
 		} else {
 			Attributes mainAttrs = manifest.getMainAttributes();
-			Object specVersion = mainAttrs.get("Specification-Version");
+			String specVersion = mainAttrs.getValue(Attributes.Name.SPECIFICATION_VERSION);
 			if (specVersion != null) {
 				printf("%s: Specification-Version=%s%n", jar.getName(), specVersion);
 			}
-			Object implVersion = mainAttrs.get("Implementation-Version");
+			String implVersion = mainAttrs.getValue(Attributes.Name.IMPLEMENTATION_VERSION);
 			if (implVersion != null) {
 				printf("%s: Implementation-Version=%s%n", jar.getName(), implVersion);
 			}
 		}
 	}
 
+	// TODO - Just print the text of the file
 	public void printManifest(JarFile jar) throws IOException {
 		Manifest manifest = jar.getManifest();
 		if (manifest == null) {
@@ -188,7 +193,6 @@ public class ClassVersionExtractor {
 	}
 
 	public void printVersions(JarFile jar) throws IOException {
-		printApplicationVersion(jar);
 		Enumeration<? extends JarEntry> entries = jar.entries();
 		while (entries.hasMoreElements()) {
 			JarEntry entry = entries.nextElement();
@@ -253,6 +257,8 @@ public class ClassVersionExtractor {
 				JarFile jar = new JarFile(f);
 				if (displayManifest) {
 					printManifest(jar);
+				} else if (displayJarVersion) {
+					printJarVersion(jar);
 				} else {
 					printVersions(jar);
 				}

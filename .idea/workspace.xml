@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c80b83dc-b2ef-44cd-98a4-e01c467acd01" name="Changes" comment="Refactor package to classver">
+    <list default="true" id="c80b83dc-b2ef-44cd-98a4-e01c467acd01" name="Changes" comment="Fixed warnings, improved usage doc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.xml" beforeDir="false" afterPath="$PROJECT_DIR$/build.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/alteredmechanism/classver/ClassVersion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/alteredmechanism/classver/ClassVersion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/alteredmechanism/classver/ClassVersionExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/alteredmechanism/classver/ClassVersionExtractor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,6 +56,7 @@
     <configuration name="ClassVersionExtractor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.alteredmechanism.classver.ClassVersionExtractor" />
       <module name="classver" />
+      <option name="PROGRAM_PARAMETERS" value="build/libs/classver.jar" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.alteredmechanism.classver.*" />
@@ -99,12 +98,32 @@
       <option name="project" value="LOCAL" />
       <updated>1748879535830</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Fixed warnings, improved usage doc">
+      <option name="closed" value="true" />
+      <created>1749105264724</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1749105264724</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Application versions" />
     <MESSAGE value="Refactor package to classver" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor package to classver" />
+    <MESSAGE value="Fixed warnings, improved usage doc" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed warnings, improved usage doc" />
   </component>
 </project>

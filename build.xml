@@ -7,9 +7,12 @@
 
 <project name="classver" default="jar" basedir=".">
 
+	<!-- Change this number to change the version. This is the only location
+	that needs to be changed to update the version. -->
+	<property name="version" value="3.0.0"/>
+
 	<property name="vendor" value="Altered Mechanism"/>
 	<property name="main.class" value="com.alteredmechanism.classver.ClassVersionExtractor" />
-	<property name="version" value="3.0.0"/>
 	<property name="lang.version" value="1.5" />
 	<property name="src.dir" value="src/main/java" />
 	<property name="java.compiler" value="${user.home}/Dropbox/opt/jdk1.5.0/jdk1.5.0_22/bin/javac" />
